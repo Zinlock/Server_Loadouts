@@ -1,0 +1,37 @@
+# Example class type set
+# Class sets allow players to select a class with a preset loadout
+# For more info, check exampleLoadoutSet.txt
+type class
+randomizer off
+
+allowPickupIncompatibleWeapons 0
+
+ClassIds: list
+	Light
+	Heavy
+
+Default Light
+
+Classes:
+	Light:
+		name Light Class
+		armor No-Jet Player
+		scale 1 1 1
+
+		Slots: list # in class mode, weapons are predefined; no customizing loadouts
+			Gun
+			Bow
+			Sword
+			# if you have less items in this list than the datablock can hold, the empty slots will be able to hold any item
+
+	Heavy:
+		name Heavy Class
+		armor No-Jet Player
+		scale 1 1 1
+
+		Slots: list
+			Guns Akimbo
+			Bow
+			Rocket L.
+			Sword
+			Hammer

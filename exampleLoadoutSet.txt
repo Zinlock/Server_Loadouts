@@ -1,0 +1,121 @@
+# Example loadout type set
+# Loadout sets allow players to pick which weapons they want in each slot
+# In randomizer mode, players will be given a random class with a random loadout
+# Text must be indented properly with tabs to work in this format!
+type loadout
+randomizer off
+# randomizer modes:
+	# on # to enable randomizer mode
+	# static # to make everyone use the same loadout (refreshed on minigame reset)
+	# staticTeams # to make everyone on the same team use the same loadout (refreshed on minigame reset)
+
+# with randomizer enabled, rarities can be defined like this:
+# rarities: list
+# 	100 Common
+# 	50 Uncommon
+# 	25 Rare
+# 	12 Epic
+# 	5 Legendary
+# the number is the tier's weight (i.e. how likely it is to be picked)
+# all items within the same rarity tier have the same chance of being picked
+# to set an item's rarity tier, follow its name with a TAB and the tier's name
+# items missing a rarity tier will use the first tier in the list
+# if no rarities are defined, all items will have equal rarity
+
+allowDuplicateWeapons 0           # can we equip the same weapon in multiple loadout slots?
+allowPickupIncompatibleWeapons 0  # can we pick up weapons that don't fit our class? (enforces inventory item order while off)
+	# items not contained in any class can be picked up by anyone
+
+Default: list # the default loadout to use (when the player has no loadout or when spawning with your loadout is disabled)
+	Light # default class id
+	Gun # weapon 1
+	Bow # weapon 2... and so on
+	XA: Crystal Sword
+# if no default is defined, players will spawn with the minigame's (or team's) default weapons instead
+# but will not have any pickup restrictions (due to not having a set class equipped)
+
+ClassIds: list # all the classes to register; each line is a new entry
+	Light # classes can not have set rarities in randomizer mode!
+	Heavy
+
+Classes: # this is where the class data actually goes
+	Light:
+		name Light Class # name displayed ingame
+		item Gun # optional: item to use as the class icon, uses the first letter (or ?) if omitted
+		armor No-Jet Player # optional: datablock used by this class, keeps the player's datablock if omitted
+		scale 1 1 1 # optional: default player scale, keeps the player's scale if omitted
+
+		onLOSwitchTo: list # events called when this class is applied to a player (from spawning or resupplying, targets Player, Client, Minigame)
+			500 Client CenterPrint "<font:arial bold:18>switched to light !!" 2
+			# syntax is Delay OutputTarget OutputEvent "arg1" "arg2" "arg3" "arg4"
+			# arguments do not have to be in quotes unless they span multiple words (strings, vectors)
+			# color arguments are inputted in "R G B" format and automatically converted to a color id
+			# can not trigger brick events or use normal input events like onMinigameJoin
+
+		onLOSwitchOff: list
+			500 Client ChatMessage "switched off from light..."
+
+		onLOResupply: list
+			0 Client ChatMessage "resupplied light"
+
+		# other events:
+		# onLOSwitchOff: list # called when a player with this class switches to a different class (targets Player, Client, Minigame)
+		# onLOResupply: list # called when a player is resupplied and the class is reapplied (targets Player, Client, Minigame)
+		# onLODeath: list # called when a player with this class dies (only called on suicide or if no killer is found, targets Player, Client, Minigame)
+		# onLOKilled: list # called when a player with this class is killed by someone else (targets KillerPlayer, KillerClient, Player, Client, Minigame)
+
+		Slots:
+			order Primary Primary Secondary # the slot order; can have duplicates
+				# if you have less slots here than the datablock's max, the unused slots will be able to hold any item
+				# you can also explicitly allow picking up any item with the ANY keyword
+
+			Primary: list # weapons that go in this slot
+				Gun
+				Guns Akimbo
+				Bow
+				TW: Light Spinfusor
+				[G] Frag Grenade
+
+			# optionally, you can provide a .txt to use as the list instead:
+			# Secondary ./Secondaries.txt
+			# each line of the txt is a list entry, can not contain comments like these
+			# for big weapon lists, use the function LOExportWeaponList("path/to/file.txt");
+			# this will dump every weapon name in your server in one properly formatted txt file
+
+			Secondary ./weaponlist.txt
+			Secondary: list # will be overwritten by the txt list
+				Sword
+				Bow
+				[G] Conc Grenade
+
+	Heavy:
+		name Heavy Class
+		armor No-Jet Player
+		scale 1 1 1
+
+		onLOSwitchTo: list
+			500 Client CenterPrint "<font:arial bold:18>switched to heavy !!" 2
+
+		onLOSwitchOff: list
+			500 Client ChatMessage "switched off from heavy..."
+
+		onLOResupply: list
+			0 Client ChatMessage "resupplied heavy"
+
+		Slots:
+			order Primary Primary Secondary Secondary
+
+			Primary: list
+				Guns Akimbo
+				Bow
+				Rocket L.
+				TW: Thumper
+				TW: Spinfusor
+
+			Secondary ./weaponlist.txt
+			Secondary: list
+				Sword
+				Hammer
+				[G] Conc Grenade
+				Combat Knife
+			
