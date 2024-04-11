@@ -165,7 +165,7 @@ package LoadoutPkg
 		if(isObject(%cl = %pl.Client) && isObject(%set = %cl.LOGetActiveSet()) && isObject(%class = %set.get(classes).get(firstWord(getField(%pl.LOLastLoadout, 0)))))
 		{
 			loTalk(%pl @ " pickup " @ %item);
-			if(%item.IsA("Item") && %item.canPickup)
+			if(%item.getClassName() $= "Item" && %item.canPickup)
 			{
 				%name = %item.getDataBlock().uiName;
 				loTalk("item " @ %name SPC (LOIsInSet(%name, %set) ? "in set" : "not in set"));
