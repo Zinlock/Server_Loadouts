@@ -175,9 +175,16 @@ function LOIsInSet(%weapon, %set)
 	{
 		%class = %classes.get(%set.listGet(classIds, %i));
 		%slots = %class.get(slots);
-		%order = %slots.get(order);
 
-		%ct2 = getWordCount(%order);
+		if(isObject(%slots))
+		{
+			%order = %slots.get(order);
+
+			%ct2 = getWordCount(%order);
+		}
+		else
+			%ct2 = %class.listNum(slots);
+
 		for(%o = 0; %o < %ct2; %o++)
 		{
 			if(LOIsInSlot(%weapon, %o, %class))
@@ -199,16 +206,19 @@ function LOIsInSet(%weapon, %set)
 function LOIsInSlot(%weapon, %idx, %class)
 {
 	%slots = %class.get(slots);
-	%order = %slots.get(order);
 
-	%slotId = getWord(%order, %idx);
-
-	%ct3 = %slots.listNum(%slotId);
-	for(%w = 0; %w < %ct3; %w++)
+	if(isObject(%slots))
 	{
-		%itm = %slots.listGet(%slotId, %w);
+		%order = %slots.get(order);
 
-		if(trim(%itm) $= trim(%weapon))
+		%slotId = getWord(%order, %idx);
+
+		if(%slots.listFind(%slotId, trim(%weapon)) >= 0)
+			return true;
+	}
+	else
+	{
+		if(%class.listGet(slots, %idx) $= trim(%weapon))
 			return true;
 	}
 
@@ -221,22 +231,44 @@ function LOGetMatchingSlotTitle(%item, %class)
 	%matches = 0;
 
 	%slots = %class.get(slots);
-	%order = %slots.get(order);
 
-	%cts = getWordCount(%order);
-	for(%i = 0; %i < %cts; %i++)
+	if(isObject(%slots))
 	{
-		%slot = getWord(%order, %i);
+		%order = %slots.get(order);
+		%cts = getWordCount(%order);
+		
+		for(%i = 0; %i < %cts; %i++)
+		{
+			%slot = getWord(%order, %i);
 
-		for(%s = 0; (%itemName = %slots.listGet(%slot, %s)) !$= ""; %s++)
+			for(%s = 0; (%itemName = %slots.listGet(%slot, %s)) !$= ""; %s++)
+			{
+				if(trim(%itemName) $= trim(%item))
+				{
+					%match[%matches] = %slot;
+					if(%matched[%slot])
+						%matchMult[%slot] = true;
+
+					%matched[%slot] = true;
+					%matches++;
+					break;
+				}
+			}
+		}
+	}
+	else
+	{
+		%cts = %class.listNum(slots);
+
+		for(%i = 0; (%itemName = %class.listGet(slots, %i)) !$= ""; %i++)
 		{
 			if(trim(%itemName) $= trim(%item))
 			{
-				%match[%matches] = %slot;
-				if(%matched[%slot])
-					%matchMult[%slot] = true;
+				%match[%matches] = %itemName;
+				if(%matched[%i])
+					%matchMult[%i] = true;
 
-				%matched[%slot] = true;
+				%matched[%i] = true;
 				%matches++;
 				break;
 			}
@@ -295,7 +327,7 @@ function GameConnection::LOGetLoadoutString(%cl)
 	%str = %cl.LOClass;
 	%class = %set.get(classes).get(%cl.LOClass);
 
-	if(%set.get(type) $= "loadout")
+	if(%set.get(type) $= "loadout" && isObject(%class))
 	{
 		%slots = %class.get(slots);
 		%order = %slots.get(order);
@@ -312,7 +344,7 @@ function GameConnection::LOGetLoadoutString(%cl)
 		}
 	}
 
-	return %str;
+	return trim(%str);
 }
 
 // * Sets this client's loadout from a string
