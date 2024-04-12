@@ -25,27 +25,19 @@ function loTalk(%str)
 		echo(%str);
 }
 
-function fileCopyH(%from, %to)
-{
-	if(!isFile(%from))
-		return;
-	
-	%file = new FileObject();
-	if(!%file.openForWrite(%to))
-	{
-		error("fileCopyH() - could not write to file " @ %to);
-
-		%file.close();
-		%file.delete();
-		return;
-	}
-
-	%file.writeLine("Temp");
-
-	%file.close();
-	%file.delete();
-
-	fileCopy(%from, %to);
+// Taken from Blockland Glass
+function fileCopyH(%source, %destination) {
+  %fo_source = new FileObject();
+  %fo_dest = new FileObject();
+  %fo_source.openForRead(%source);
+  %fo_dest.openForWrite(%destination);
+  while(!%fo_source.isEOF()) {
+    %fo_dest.writeLine(%fo_source.readLine());
+  }
+  %fo_source.close();
+  %fo_dest.close();
+  %fo_source.delete();
+  %fo_dest.delete();
 }
 
 function fileRead(%path)
