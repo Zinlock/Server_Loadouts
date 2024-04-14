@@ -180,6 +180,9 @@ function LoadoutMenuSO::onClick(%obj, %cl, %idx)
 		%obj.close(%cl);
 
 		%cl.longCenterPrint($loBigFont @ $loActiveColor @ %name @ "<br>" @ $loSmallFont @ $loNeutralColor @ "selected", 2);
+
+		if(%cl.minigame.LOApplyOnSpawn)
+			messageClient(%cl, '', "\c5Respawn to get your new loadout.");
 	}
 }
 

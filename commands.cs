@@ -111,3 +111,4 @@ function serverCmdLoadout(%cl)
 }
 
 function serverCmdLoadouts(%cl) { serverCmdLoadout(%cl); }
+function serverCmdClass(%cl) { serverCmdLoadout(%cl); }

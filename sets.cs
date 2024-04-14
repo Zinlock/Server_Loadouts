@@ -568,7 +568,7 @@ function GameConnection::LORandomizeLoadout(%cl, %seed)
 }
 
 // * Grants this player their active loadout
-function GameConnection::LOApplyLoadout(%cl, %resupply, %force)
+function GameConnection::LOApplyLoadout(%cl, %resupply, %force, %silent)
 {
 	%set = %cl.LOGetActiveSet();
 
@@ -627,6 +627,9 @@ function GameConnection::LOApplyLoadout(%cl, %resupply, %force)
 			%pl.LOSetItem(%item, %i);
 		}
 	}
+
+	if(!%silent && %set.get(randomizer) $= "off" && %set.listNum(classIds) > 1)
+		%cl.longCenterPrint($loBigFont @ $loActiveColor @ %class.get(name) @ "<br>" @ $loSmallFont @ $loNeutralColor @ (!%resupply ? "applied" : "resupplied") @ "<br>" @ $loInactiveColor @ "/loadouts to change class", 3);
 
 	if(!%resupply)
 	{

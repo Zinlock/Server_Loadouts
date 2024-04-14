@@ -20,26 +20,28 @@ $OutputDescription_["GameConnection", "LORandomizeLoadout"] = "[seed]" NL
                                                               "Randomizes this client's current loadout set." NL
                                                               "seed: Random seed to use, same seed is always the same loadout (0 for true random)";
 
-registerOutputEvent(Player, LOApplyLoadout, "bool");
+registerOutputEvent(Player, LOApplyLoadout, "bool" TAB "bool");
 
-$OutputDescription_["Player", "LOApplyLoadout"] = "[force]" NL
+$OutputDescription_["Player", "LOApplyLoadout"] = "[force] [silent]" NL
                                                   "Applies this player's active loadout." NL
-                                                  "force: Applies their loadout even if it is already equipped";
+                                                  "force: Applies their loadout even if it is already equipped" NL
+                                                  "silent: Hides the centerprint message";
 
-function Player::LOApplyLoadout(%pl, %force)
+function Player::LOApplyLoadout(%pl, %force, %silent)
 {
 	if(isObject(%cl = %pl.Client))
-		%cl.LOApplyLoadout(false, %force);
+		%cl.LOApplyLoadout(false, %force, %silent);
 }
 
-registerOutputEvent(Player, LOResupplyLoadout, "bool");
+registerOutputEvent(Player, LOResupplyLoadout, "bool" TAB "bool");
 
-$OutputDescription_["Player", "LOResupplyLoadout"] = "[force]" NL
+$OutputDescription_["Player", "LOResupplyLoadout"] = "[force] [silent]" NL
                                                      "Resupplies this player's last loadout." NL
-                                                     "force: Applies their loadout instead if it was changed";
+                                                     "force: Applies their loadout instead if it was changed" NL
+                                                     "silent: Hides the centerprint message";
 
-function Player::LOResupplyLoadout(%pl, %force)
+function Player::LOResupplyLoadout(%pl, %force, %silent)
 {
 	if(isObject(%cl = %pl.Client))
-		%cl.LOApplyLoadout(true, %force);
+		%cl.LOApplyLoadout(true, %force, %silent);
 }
