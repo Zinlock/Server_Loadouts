@@ -9,6 +9,9 @@
 	// ex: 500 Client CenterPrint "Test Message" 2
 function SETriggerEvent(%targets, %input, %lines)
 {
+	if(isObject(%brk = $SEEventBrick[%input, %lines]) && %brk.sequence != $SESequence)
+		%brk.delete();
+
 	if(!isObject(%brk = $SEEventBrick[%input, %lines]))
 	{
 		%brk = new FxDTSBrick(see)
@@ -16,6 +19,7 @@ function SETriggerEvent(%targets, %input, %lines)
 			datablock = Brick1x1fData;
 			position = "0 0 -8192";
 			isSEBrick = true;
+			sequence = $SESequence;
 		};
 
 		MissionCleanup.add(%brk);
@@ -52,6 +56,8 @@ function SETriggerEvent(%targets, %input, %lines)
 // * Goes through all existing input and output events and registers extra info about them here
 function SESetup()
 {
+	$SESequence++;
+
 	if(isObject($SEClient))
 		$SEClient.delete();
 
@@ -135,7 +141,26 @@ function SESetup()
 	}
 }
 
-schedule(0, 0, SESetup);
+package StandaloneEventsPkg
+{
+	function GameConnection::onClientEnterGame(%cl)
+	{
+		if($SESequence $= "")
+			schedule(0, 0, SESetup);
+
+		return Parent::onClientEnterGame(%cl);
+	}
+};
+activatePackage(StandaloneEventsPkg);
+
+function serverCmdSEReload(%cl)
+{
+	if(!%cl.isAdmin)
+		return;
+
+	SESetup();
+	messageClient(%cl, '', "\c5Reloaded SE events.");
+}
 
 // * Parses a single line string, separating words into fields and keeping words in quotes together
 function SEParseQuotes(%str)
