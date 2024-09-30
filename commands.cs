@@ -112,3 +112,9 @@ function serverCmdLoadout(%cl)
 
 function serverCmdLoadouts(%cl) { serverCmdLoadout(%cl); }
 function serverCmdClass(%cl) { serverCmdLoadout(%cl); }
+
+if($ServerCusBindCount $= "") $ServerCusBindCount = 0;
+
+$ServerCusBind[$ServerCusBindCount] = "Loadouts" TAB "Loadout Menu" TAB "" TAB "loadouts";
+$ServerCusBindDefault[$ServerCusBindCount] = "keyboard" TAB "f4";
+$ServerCusBindCount++;

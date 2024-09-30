@@ -162,10 +162,15 @@ function LoadoutMenuSO::onSelect(%obj, %cl, %idx)
 	{
 		%name = %obj.classObj[%idx].get(name);
 
+		%class = %obj.classObj[%idx];
+		%cts = %class.listNum(slots);
+		for(%i = 0; %i < %cts; %i++)
+			%weaponStr = %weaponStr @ "<br>" @ %class.listGet(slots, %i);
+
 		if(%obj.classId[%idx] !$= %cl.LOGetLoadoutString())
-			%cl.longCenterPrint($loBigFont @ $loInactiveColor @ %name @ "<br>" @ $loSmallFont @ $loNeutralColor @ "select class >>");
+			%cl.longCenterPrint($loBigFont @ $loInactiveColor @ %name @ "<br>" @ $loSmallFont @ $loNeutralColor @ "select class >>" @ trim(%weaponStr));
 		else
-			%cl.longCenterPrint($loBigFont @ $loActiveColor @ %name @ "<br>" @ $loSmallFont @ $loNeutralColor @ "selected");
+			%cl.longCenterPrint($loBigFont @ $loActiveColor @ %name @ "<br>" @ $loSmallFont @ $loNeutralColor @ "selected" @ trim(%weaponStr));
 	}
 }
 

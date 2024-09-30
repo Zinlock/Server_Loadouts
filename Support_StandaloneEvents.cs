@@ -53,6 +53,24 @@ function SETriggerEvent(%targets, %input, %lines)
 
 // * === Other functions ===
 
+// * Returns the fake event client, and creates it if it is missing
+function SEGetClient()
+{
+	if(!isObject($SEClient))
+	{
+		$SEClient = new ScriptObject(sec)
+		{
+			name = "SE";
+			bl_id = 888888;
+			brickGroup = BrickGroup_888888;
+			isAdmin = true;
+			isSuperAdmin = true;
+		};
+	}
+
+	return $SEClient;
+}
+
 // * Goes through all existing input and output events and registers extra info about them here
 function SESetup()
 {
@@ -61,14 +79,7 @@ function SESetup()
 	if(isObject($SEClient))
 		$SEClient.delete();
 
-	$SEClient = new ScriptObject(sec)
-	{
-		name = "SE";
-		bl_id = 888888;
-		brickGroup = BrickGroup_888888;
-		isAdmin = true;
-		isSuperAdmin = true;
-	};
+	SEGetClient();
 
 	deleteVariables("$SEInput*");
 	deleteVariables("$SEOutput*");
@@ -305,9 +316,9 @@ function FxDTSBrick::SEAddEvent(%brk, %line, %direct, %dInput)
 	}
 
 	%llb = $LastLoadedBrick;
-	$SEClient.wrenchBrick = %brk;
+	SEGetClient().wrenchBrick = %brk;
 	$LastLoadedBrick = %brk;
-	serverCmdAddEvent($SEClient, %active, %inputId, %delay, %targetId, -1, %outputId, %arg0, %arg1, %arg2, %arg3);
+	serverCmdAddEvent(SEGetClient(), %active, %inputId, %delay, %targetId, -1, %outputId, %arg0, %arg1, %arg2, %arg3);
 	$LastLoadedBrick = %llb;
 }
 
@@ -364,12 +375,13 @@ function SEFindDatablock(%type, %name, %exact)
 // * Gets a value from a key value pair list
 function SEGetListValue(%list, %name)
 {
+	%name = trim(strreplace(%name, "_", " "));
 	%match = "";
 
 	%cts = getWordCount(%list);
 	for(%i = 0; %i < %cts; %i += 2)
 	{
-		%key = getWord(%list, %i);
+		%key = trim(strreplace(getWord(%list, %i), "_", " "));
 		%value = getWord(%list, %i + 1);
 
 		if(%key $= %name)

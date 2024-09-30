@@ -65,7 +65,7 @@ package LoadoutPkg
 			}
 
 			if(%mg.LOApplyOnSpawn)
-				%cl.LOApplyLoadout(false, false);
+				%cl.LOApplyLoadout(false, false, %random !$= "on");
 			else
 			{
 				%old = %cl.LOGetLoadoutString();
@@ -73,7 +73,7 @@ package LoadoutPkg
 					%cl.LOSetLoadoutString(strreplace(%set.listDump("default"), "\n", "\t"));
 				else
 					%cl.LOSetLoadoutString(%set.get("default"));
-				%cl.LOApplyLoadout(false, false);
+				%cl.LOApplyLoadout(false, false, true);
 				%cl.LOSetLoadoutString(%old);
 			}
 		}

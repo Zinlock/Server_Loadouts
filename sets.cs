@@ -90,6 +90,16 @@ function LOReloadSets()
 						%entry = %slots.listGet(%slot, %s);
 
 						%item = getField(%entry, 0);
+
+						if(!isObject(SEFindDatablock("ItemData", %item)))
+						{
+							echo("Set " @ %name @ ": couldn't find item " @ %item @ " for class " @ %classId @ " slot " @ %slot);
+							%slots.listRemove(%slot, %s);
+							%s--;
+							%ct3--;
+							continue;
+						}
+
 						%tier = trim(getField(%entry, 1));
 
 						lotalk("Entry " @ %entry @ ": " @ %item @ ", tier " @ %tier);
@@ -586,13 +596,21 @@ function GameConnection::LOApplyLoadout(%cl, %resupply, %force, %silent)
 	if(%resupply && %pl.LOLastLoadout $= "")
 		%resupply = false;
 
-	if(%resupply && !%force && (%new = %cl.LOGetLoadoutString()) !$= %pl.LOLastLoadout)
-		%cl.LOSetLoadoutString(%pl.LOLastLoadout);
+	if(%resupply && (%new = %cl.LOGetLoadoutString()) !$= %pl.LOLastLoadout)
+	{
+		if(%force)
+			%resupply = false;
+		else
+			%cl.LOSetLoadoutString(%pl.LOLastLoadout);
+	}
 
 	%class = %set.get(classes).get(%cl.LOClass);
 
 	if(%class.get(armor) !$= "" && isObject(%db = SEFindDatablock("PlayerData", %class.get(armor))))
+	{
 		%pl.ChangeDataBlock(%db);
+		commandToClient(%cl, 'PlayGui_CreateToolHud', %db.maxTools);
+	}
 
 	if(%class.get(scale) !$= "")
 		%pl.setScale(%class.get(scale));
@@ -641,6 +659,8 @@ function GameConnection::LOApplyLoadout(%cl, %resupply, %force, %silent)
 	else
 		SETriggerEvent(%cl.LOGetInputTarget(), "onLOEvent", %class.listDump(onLOResupply));
 
+	SETriggerEvent(%cl.LOGetInputTarget(), "onLOEvent", %class.listDump(onLOApplied));
+
 	%pl.LOLastLoadout = %cl.LOGetLoadoutString();
 
 	if(%new !$= "")
@@ -668,6 +688,9 @@ function Player::LOSetItem(%pl, %name, %idx)
 
 		if(%pl.currTool == %idx)
 			ServerCmdUseTool(%cl, %idx);
+
+		%pl.aeAmmo[%idx, "", 0] = "";
+		%pl.weaponCharges[%idx] = "";
 	}
 }
 

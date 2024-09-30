@@ -61,6 +61,7 @@ Classes: # this is where the class data actually goes
 		# other events:
 		# onLOSwitchOff: list # called when a player with this class switches to a different class (targets Player, Client, Minigame)
 		# onLOResupply: list # called when a player is resupplied and the class is reapplied (targets Player, Client, Minigame)
+		# onLOApplied: list # called when a player is resupplied OR the class is first applied (targets Player, Client, Minigame)
 		# onLODeath: list # called when a player with this class dies (only called on suicide or if no killer is found, targets Player, Client, Minigame)
 		# onLOKilled: list # called when a player with this class is killed by someone else (targets KillerPlayer, KillerClient, Player, Client, Minigame)
 
