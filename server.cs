@@ -78,7 +78,7 @@ function expandLocalPath(%path, %local)
 	if(isFile(%path))
 		%path = trim(filePath(%path));
 
-	if(getSubStr(%path, strlen(%path) - 1, 1) $= "/")
+	if(strlen(%path) > 0 && getSubStr(%path, strlen(%path) - 1, 1) $= "/")
 		%path = trim(filePath(%path));
 
 	if(getSubStr(%local, 0, 2) $= "./")
