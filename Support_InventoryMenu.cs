@@ -163,10 +163,7 @@ package InventoryMenuPkg
 	{
 		%cl = %pl.getControllingClient();
 		if(isObject(%obj = %cl.inventoryMenu) && !isObject(%pl.getMountedImage(0)) && %trig == 0 && %val)
-		{
 			%obj.onClick(%cl, %cl.inventorySelect);
-			return;
-		}
 
 		Parent::onTrigger(%db, %pl, %trig, %val);
 	}
@@ -175,10 +172,7 @@ package InventoryMenuPkg
 	{
 		%cl = %cam.getControllingClient();
 		if(isObject(%obj = %cl.inventoryMenu) && %trig == 0 && %val)
-		{
 			%obj.onClick(%cl, %cl.inventorySelect);
-			return;
-		}
 
 		Parent::onTrigger(%db, %cam, %trig, %val);
 	}
