@@ -162,7 +162,7 @@ package InventoryMenuPkg
 	function Armor::onTrigger(%db, %pl, %trig, %val)
 	{
 		%cl = %pl.getControllingClient();
-		if(isObject(%obj = %cl.inventoryMenu) && !isObject(%pl.getMountedImage(0)) && %trig == 0 && %val)
+		if(isObject(%obj = %cl.inventoryMenu) && %trig == 0 && %val)
 			%obj.onClick(%cl, %cl.inventorySelect);
 
 		Parent::onTrigger(%db, %pl, %trig, %val);
